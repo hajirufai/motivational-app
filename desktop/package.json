@@ -1,0 +1,53 @@
+{
+  "name": "motivational-quotes-desktop",
+  "version": "1.0.0",
+  "description": "Desktop application for Motivational Quotes",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder build --mac --win --linux",
+    "build:mac": "electron-builder build --mac",
+    "build:win": "electron-builder build --win",
+    "build:linux": "electron-builder build --linux"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.3.6",
+    "electron-log": "^4.4.8",
+    "electron-store": "^8.1.0",
+    "electron-updater": "^5.3.0",
+    "firebase": "^9.20.0"
+  },
+  "devDependencies": {
+    "electron": "^24.1.2",
+    "electron-builder": "^23.6.0"
+  },
+  "build": {
+    "appId": "com.motivationalapp.desktop",
+    "productName": "Motivational Quotes",
+    "mac": {
+      "category": "public.app-category.lifestyle",
+      "target": ["dmg"]
+    },
+    "win": {
+      "target": ["nsis"]
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "category": "Utility"
+    },
+    "directories": {
+      "output": "build"
+    },
+    "files": [
+      "src/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "publish": {
+      "provider": "generic",
+      "url": "https://example.com/downloads/"
+    }
+  }
+}

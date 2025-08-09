@@ -1,0 +1,198 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  NODE_VERSION: '18'
+  DOCKER_REGISTRY: ghcr.io
+  IMAGE_NAME: motivational-app
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      mongodb:
+        image: mongo:5.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: |
+          server/package-lock.json
+          web/package-lock.json
+          desktop/package-lock.json
+    
+    - name: Install server dependencies
+      run: |
+        cd server
+        npm ci
+    
+    - name: Install web dependencies
+      run: |
+        cd web
+        npm ci
+    
+    - name: Install desktop dependencies
+      run: |
+        cd desktop
+        npm ci
+    
+    - name: Run server tests
+      run: |
+        cd server
+        npm test
+      env:
+        MONGODB_URI: mongodb://localhost:27017/motivational_quotes_test
+        NODE_ENV: test
+    
+    - name: Run web tests
+      run: |
+        cd web
+        npm test -- --coverage --watchAll=false
+    
+    - name: Build web application
+      run: |
+        cd web
+        npm run build
+    
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      with:
+        directory: ./web/coverage
+
+  build-and-push:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    permissions:
+      contents: read
+      packages: write
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.DOCKER_REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.DOCKER_REGISTRY }}/${{ github.repository }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=sha,prefix={{branch}}-
+          type=raw,value=latest,enable={{is_default_branch}}
+    
+    - name: Build and push server image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./server
+        push: true
+        tags: ${{ env.DOCKER_REGISTRY }}/${{ github.repository }}/server:${{ github.sha }}
+        labels: ${{ steps.meta.outputs.labels }}
+    
+    - name: Build and push web image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./web
+        push: true
+        tags: ${{ env.DOCKER_REGISTRY }}/${{ github.repository }}/web:${{ github.sha }}
+        labels: ${{ steps.meta.outputs.labels }}
+
+  build-desktop:
+    needs: test
+    runs-on: ${{ matrix.os }}
+    if: github.ref == 'refs/heads/main'
+    
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: desktop/package-lock.json
+    
+    - name: Install dependencies
+      run: |
+        cd desktop
+        npm ci
+    
+    - name: Build desktop app (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        cd desktop
+        npm run build:linux
+    
+    - name: Build desktop app (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        cd desktop
+        npm run build:win
+    
+    - name: Build desktop app (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        cd desktop
+        npm run build:mac
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: desktop-app-${{ matrix.os }}
+        path: desktop/build/
+        retention-days: 30
+
+  deploy-staging:
+    needs: [build-and-push]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    environment: staging
+    
+    steps:
+    - name: Deploy to staging
+      run: |
+        echo "Deploying to staging environment..."
+        # Add your staging deployment commands here
+
+  deploy-production:
+    needs: [build-and-push, build-desktop]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    
+    steps:
+    - name: Deploy to production
+      run: |
+        echo "Deploying to production environment..."
+        # Add your production deployment commands here
+        # This could include AWS ECS deployment, Kubernetes, etc.

@@ -1,0 +1,537 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6",
+    "name": "Motivational Quotes API",
+    "description": "API collection for testing the Motivational Quotes application",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Check if the API server is running"
+          },
+          "response": []
+        }
+      ],
+      "description": "Health check endpoints"
+    },
+    {
+      "name": "Quotes",
+      "item": [
+        {
+          "name": "Get Random Quote",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/quotes/random",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "quotes", "random"]
+            },
+            "description": "Get a random quote"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Quotes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/quotes?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "quotes"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all quotes with pagination"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Quote By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/quotes/{{quoteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "quotes", "{{quoteId}}"]
+            },
+            "description": "Get a specific quote by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Quotes By Tag",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/quotes/tag/{{tag}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "quotes", "tag", "{{tag}}"]
+            },
+            "description": "Get quotes by tag"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Quote",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{
+                "key": "token",
+                "value": "{{authToken}}",
+                "type": "string"
+              }]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Your time is limited, so don't waste it living someone else's life.\",\n  \"author\": \"Steve Jobs\",\n  \"source\": \"Stanford Commencement Address\",\n  \"tags\": [\"inspiration\", \"life\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/quotes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "quotes"]
+            },
+            "description": "Create a new quote (requires authentication)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Quote",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{
+                "key": "token",
+                "value": "{{authToken}}",
+                "type": "string"
+              }]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Updated quote text\",\n  \"author\": \"Updated Author\",\n  \"tags\": [\"updated\", \"tags\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/quotes/{{quoteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "quotes", "{{quoteId}}"]
+            },
+            "description": "Update an existing quote (requires authentication)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Quote",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{
+                "key": "token",
+                "value": "{{authToken}}",
+                "type": "string"
+              }]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/quotes/{{quoteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "quotes", "{{quoteId}}"]
+            },
+            "description": "Delete a quote (requires authentication)"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for managing quotes"
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Register a new user"
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login and get authentication token"
+          },
+          "response": []
+        }
+      ],
+      "description": "Authentication endpoints"
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{
+                "key": "token",
+                "value": "{{authToken}}",
+                "type": "string"
+              }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profile"]
+            },
+            "description": "Get user profile (requires authentication)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{
+                "key": "token",
+                "value": "{{authToken}}",
+                "type": "string"
+              }]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\",\n  \"preferences\": {\n    \"theme\": \"dark\",\n    \"emailNotifications\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profile"]
+            },
+            "description": "Update user profile (requires authentication)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Favorites",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{
+                "key": "token",
+                "value": "{{authToken}}",
+                "type": "string"
+              }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/favorites",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "favorites"]
+            },
+            "description": "Get user's favorite quotes (requires authentication)"
+          },
+          "response": []
+        },
+        {
+          "name": "Add to Favorites",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{
+                "key": "token",
+                "value": "{{authToken}}",
+                "type": "string"
+              }]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quoteId\": \"{{quoteId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/favorites",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "favorites"]
+            },
+            "description": "Add a quote to favorites (requires authentication)"
+          },
+          "response": []
+        },
+        {
+          "name": "Remove from Favorites",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{
+                "key": "token",
+                "value": "{{authToken}}",
+                "type": "string"
+              }]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/favorites/{{quoteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "favorites", "{{quoteId}}"]
+            },
+            "description": "Remove a quote from favorites (requires authentication)"
+          },
+          "response": []
+        }
+      ],
+      "description": "User-related endpoints"
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Get Dashboard Stats",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{
+                "key": "token",
+                "value": "{{adminToken}}",
+                "type": "string"
+              }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "dashboard"]
+            },
+            "description": "Get admin dashboard statistics (requires admin role)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{
+                "key": "token",
+                "value": "{{adminToken}}",
+                "type": "string"
+              }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users"]
+            },
+            "description": "Get all users (requires admin role)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Role",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{
+                "key": "token",
+                "value": "{{adminToken}}",
+                "type": "string"
+              }]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"admin\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/{{userId}}/role",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users", "{{userId}}", "role"]
+            },
+            "description": "Update a user's role (requires admin role)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Activity Logs",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{
+                "key": "token",
+                "value": "{{adminToken}}",
+                "type": "string"
+              }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/logs?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "logs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Get activity logs (requires admin role)"
+          },
+          "response": []
+        }
+      ],
+      "description": "Admin-only endpoints"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5001",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "your-auth-token-here",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "your-admin-token-here",
+      "type": "string"
+    },
+    {
+      "key": "quoteId",
+      "value": "quote-id-here",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "user-id-here",
+      "type": "string"
+    },
+    {
+      "key": "tag",
+      "value": "inspiration",
+      "type": "string"
+    }
+  ]
+}

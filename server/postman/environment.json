@@ -1,0 +1,45 @@
+{
+  "id": "motivational-quotes-environment",
+  "name": "Motivational Quotes Environment",
+  "values": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5001",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "quoteId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "tag",
+      "value": "inspiration",
+      "type": "default",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2023-05-15T12:00:00.000Z",
+  "_postman_exported_using": "Postman/10.13.0"
+}
